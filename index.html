@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Profiles & Certificates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        /* Header / Banner */
+        .header-banner {
+            width: 100%;
+            height: 280px;
+            background: #2c3e50;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Profiles Section */
+        .profiles-section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #3498db;
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #eef2f7;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #3498db;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 300;
+        }
+
+        .profile-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .profile-surname {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+
+        .profile-divider {
+            width: 50px;
+            height: 2px;
+            background: #e0e6ed;
+            margin: 0 auto 25px;
+        }
+
+        .cert-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cert-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .cert-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .cert-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* PDF Viewer Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            height: 85vh;
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .pdf-container {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 60px);
+            overflow: auto;
+            background: #525659;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none; /* Prevents direct interaction */
+        }
+
+        /* Protection overlay */
+        .protection-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            cursor: not-allowed;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 4rem;
+            color: rgba(255,255,255,0.08);
+            pointer-events: none;
+            z-index: 5;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #95a5a6;
+            font-size: 0.85rem;
+            border-top: 1px solid #eef2f7;
+            background: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-banner {
+                height: 200px;
+            }
+            .header-title {
+                font-size: 1.8rem;
+            }
+            .profiles-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .modal-content {
+                width: 95%;
+                height: 90vh;
+            }
+        }
+
+        /* Print prevention */
+        @media print {
+            body * {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <header class="header-banner">
+        <!-- Replace src with your banner image path -->
+        <img src="banner.jpg" alt="Header Banner" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #2c3e50 0%, #3498db 100%)';">
+        <div class="header-overlay">
+            <h1 class="header-title">Our Certificates</h1>
+        </div>
+    </header>
+
+    <!-- Profiles Section -->
+    <section class="profiles-section">
+        <div class="container">
+            <h2 class="section-title">Professional Profiles</h2>
+            
+            <div class="profiles-grid">
+                
+                <!-- Profile 1 -->
+                <div class="profile-card">
+                    <div class="profile-avatar">JD</div>
+                    <div class="profile-name">John</div>
+                    <div class="profile-surname">Doe</div>
+                    <div class="profile-divider"></div>
+                    <div class="cert-buttons">
+                        <button class="cert-btn" onclick="openPDF('certificate1.pdf', 'Certificate - John Doe')">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            View Certificate 1
+                        </button>
+                        <button class="cert-btn" onclick="openPDF('certificate2.pdf', 'Diploma - John Doe')">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                            View Certificate 2
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile 2 -->
+                <div class="profile-card">
+                    <div class="profile-avatar">JS</div>
+                    <div class="profile-name">Jane</div>
+                    <div class="profile-surname">Smith</div>
+                    <div class="profile-divider"></div>
+                    <div class="cert-buttons">
+                        <button class="cert-btn" onclick="openPDF('certificate3.pdf', 'Certificate - Jane Smith')">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            View Certificate 1
+                        </button>
+                        <button class="cert-btn" onclick="openPDF('certificate4.pdf', 'Diploma - Jane Smith')">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                            View Certificate 2
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Confidential Certificates — View Only</p>
+    </footer>
+
+    <!-- PDF Viewer Modal -->
+    <div class="modal-overlay" id="pdfModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Certificate</span>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="pdf-container" id="pdfContainer">
+                <div class="watermark">CONFIDENTIAL — VIEW ONLY</div>
+                <div class="protection-overlay"></div>
+                <iframe class="pdf-viewer" id="pdfViewer" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable keyboard shortcuts for saving/printing
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S, Ctrl+P, Ctrl+Shift+S, Cmd+S, Cmd+P
+            if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p' || e.key === 'S' || e.key === 'P')) {
+                e.preventDefault();
+                return false;
+            }
+            // F12 (DevTools)
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+Shift+I/J/C, Cmd+Option+I/J
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Disable drag and drop
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+
+        // Disable text selection
+        document.addEventListener('selectstart', function(e) {
+            if (document.getElementById('pdfModal').classList.contains('active')) {
+                e.preventDefault();
+            }
+        });
+
+        // Detect DevTools opening (basic)
+        let devtoolsOpen = false;
+        setInterval(function() {
+            const threshold = 160;
+            if (window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold) {
+                if (!devtoolsOpen) {
+                    devtoolsOpen = true;
+                    document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#c0392b;font-size:1.5rem;">Access Denied</div>';
+                }
+            } else {
+                devtoolsOpen = false;
+            }
+        }, 1000);
+
+        // PDF Modal Functions
+        function openPDF(pdfUrl, title) {
+            const modal = document.getElementById('pdfModal');
+            const viewer = document.getElementById('pdfViewer');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalTitle.textContent = title;
+            // Use Google Docs viewer for additional protection layer
+            viewer.src = 'https://docs.google.com/gview?embedded=1&url=' + encodeURIComponent(window.location.origin + '/' + pdfUrl);
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget && event.type === 'click') return;
+            
+            const modal = document.getElementById('pdfModal');
+            const viewer = document.getElementById('pdfViewer');
+            
+            modal.classList.remove('active');
+            viewer.src = '';
+            document.body.style.overflow = '';
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Prevent screenshot tools (basic overlay flash)
+        setInterval(function() {
+            if (document.getElementById('pdfModal').classList.contains('active')) {
+                const overlay = document.querySelector('.protection-overlay');
+                overlay.style.background = 'rgba(255,255,255,0.01)';
+                setTimeout(() => {
+                    overlay.style.background = 'transparent';
+                }, 50);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
